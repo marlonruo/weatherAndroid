@@ -1,0 +1,171 @@
+@charset "utf-8";
+@font-face {
+	font-family: 'OpenSansBold';
+	src: url('../fonts/OpenSansBold.eot?') format('eot'), url('../fonts/OpenSansBold.otf') format('opentype'), url('../fonts/OpenSansBold.woff') format('woff'), url('../fonts/OpenSansBold.ttf') format('truetype'), url('../fonts/OpenSansBold.svg#carbon') format('svg');
+}
+@font-face {
+	font-family: 'OpenSansLight';
+	src: url('../fonts/OpenSansLight.eot?') format('eot'), url('../fonts/OpenSansLight.otf') format('opentype'), url('../fonts/OpenSansLight.woff') format('woff'), url('../fonts/OpenSansLight.ttf') format('truetype'), url('../fonts/OpenSansLight.svg#helvetica') format('svg');
+}
+@font-face {
+	font-family: 'OpenSansRegular';
+	src: url('../fonts/OpenSansRegular.eot?') format('eot'), url('../fonts/OpenSansRegular.otf') format('opentype'), url('../fonts/OpenSansRegular.woff') format('woff'), url('../fonts/OpenSansRegular.ttf') format('truetype'), url('../fonts/OpenSansRegular.svg#helveticaBold') format('svg');
+}
+@font-face {
+	font-family: 'simplifica';
+	src: url('../fonts/simplifica.eot?') format('eot'), url('../fonts/simplifica.otf') format('opentype'), url('../fonts/simplifica.woff') format('woff'), url('../fonts/simplifica.ttf') format('truetype'), url('../fonts/simplifica.svg#neo') format('svg');
+}
+body {
+	margin: 0px;
+	padding: 0px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.texto1 {
+	position: absolute;
+	color: #014c64;
+	text-align: center;
+	font-family: 'OpenSansBold', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.texto2 {
+	position: absolute;
+	color: #fff;
+	text-align: center;
+	font-family: 'OpenSansLight', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.texto3 {
+	position: absolute;
+	color: #fff;
+	text-align: center;
+	font-family: 'OpenSansRegula', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.texto4 {
+	position: absolute;
+	color: #fff;
+	text-align: center;
+	font-family: 'simplifica', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+#clima {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+}
+#opciones {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+	background-image: url(../imagenes/fondo_menu.png);
+	background-size: 100% 100%;
+}
+#mapa {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+}
+.dias {
+	width: 19%;
+	height: 65%;
+	position: relative;
+	float: left;
+	text-align: center;
+	font-family: 'OpenSansRegula', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	color: #FFF;
+	top: 20%;
+	text-transform: uppercase;
+	font-size:11px;
+}
+
+.dias2 {
+	width: 16%;
+	height: 100%;
+	position: relative;
+	float: left;
+	text-align: center;
+	font-family: 'OpenSansRegula', Arial;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	color: #FFF;
+	text-transform: uppercase;
+	font-size:10px;
+}
+
+
+.globito1{
+	position:absolute;
+	background-image:url(../imagenes/globito.svg);
+	background-size:100% auto;
+	background-repeat:no-repeat;
+	top:0px;
+	text-align:center;
+	width:3.8%;
+	height:7%
+	}
+.globito2{
+	position:absolute;
+	background-image:url(../imagenes/globito.svg);
+	background-size:100% auto;
+	background-repeat:no-repeat;
+	top:0px;
+	text-align:center;
+	width:3.8%;
+	height:7%
+	}
+.globito3{
+	position:absolute;
+	background-image:url(../imagenes/globito.svg);
+	background-size:100% auto;
+	background-repeat:no-repeat;
+	top:0px;
+	text-align:center;
+	width:3.8%;
+	height:7%
+	}
+.globito4{
+	position:absolute;
+	background-image:url(../imagenes/globito.svg);
+	background-size:100% auto;
+	background-repeat:no-repeat;
+	top:0px;
+	text-align:center;
+	width:3.8%;
+	height:7%
+	}
+.globito5{
+	position:absolute;
+	background-image:url(../imagenes/globito.svg);
+	background-size:100% auto;
+	background-repeat:no-repeat;
+	top:0px;
+	text-align:center;
+	width:3.8%;
+	height:7%
+	}
+
+	.globito_texto{
+		position:absolute;
+		width:200%;
+		text-align:center;
+		bottom:-50%;
+		color:#FFFFFF;
+		margin-left:-50%;
+		font-family:OpenSansLight;
+		font-size:14px;
+	}
+.mapas{
+	position:relative;
+	float:left;
+	background-image:url(../imagenes/mapa.jpg);
+	background-size:100% 100%;
+	background-repeat:no-repeat
+	}

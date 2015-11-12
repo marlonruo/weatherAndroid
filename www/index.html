@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+
+<!--
+
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="msapplication-tap-highlight" content="no" />
+
+<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+<!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+
+<meta name="viewport" content="user-scalable=no, target-densitydpi=device-dpi">
+<link rel="stylesheet" type="text/css" href="css/index.css" />
+<title>Pixel Weather</title>
+<link href="css/estilos.css" rel="stylesheet" type="text/css">
+
+<script src="js/jquery-1.11.2.js" type="text/javascript"></script>
+<script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+<script src="js/ui.touch.punch.js"></script>
+<script src="js/transit.js"></script>
+<script src="js/easing.js"></script>
+<script type="text/javascript" src="js/jquery.infinitedrag-extscope.js"></script>
+<script src="bootstrap.min.js"></script>
+
+</head>
+
+<body onLoad="inicio()" style="overflow:hidden; background-color:#000">
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+var formatTime = function(unixTimestamp) {
+    		var milliseconds = unixTimestamp * 1000;
+            var date = new Date(milliseconds);
+    		var hours = date.getHours();
+    		
+    		var minutes = date.getMinutes();
+    		minutes = minutes.toString();
+    		if(minutes.length < 2) {
+        		minutes = 0 + minutes;
+    		}
+    		var time = hours + ':' + minutes;
+    		return time;
+        }
+		
+
+var meses = new Array ("JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC");
+var diasSemana = new Array("SUN","MON","TUE","WED","THU","FRI","SAT");
+var f=new Date();
+var fecha = diasSemana[f.getDay()] + " " + f.getDate() + " " + meses[f.getMonth()] + " " + f.getFullYear();
+
+var hora= f.getHours()
+var minuto= f.getMinutes()
+
+
+
+
+
+$(document).ready(DocReady);
+var ico1
+var ico2
+var ico3
+var ico4
+var ico5
+var ico6
+var ico7
+var ico8
+var ico9
+var ico10
+var ico11
+var ico12
+var ico13
+var grados
+var grados1
+var grados2
+var grados3
+var grados4
+var grados5
+var grados6
+var gg = localStorage.getItem('grados')
+var ico
+var ico2
+var cadena
+var dia
+var horasM
+var horasT
+var horasA
+var sunset
+var sunrise
+var lat = localStorage.getItem('latitud')
+var lon = localStorage.getItem('longitud')
+function DocReady()
+{
+	$('#tt0').html(localStorage.getItem('latitud'))
+
+	 if(document.getElementById("tt0").innerHTML=="NULL" || document.getElementById("tt0").innerHTML=="null" || document.getElementById("tt0").innerHTML==""){
+	
+    var Result = $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat=19.428471&lon=-99.127663&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (data)
+    {
+		grados = data.main.temp
+		
+		if(gg==1){
+		 	grados = (grados -32)/1.8
+		 }
+		
+		$('#tt1').html(data.name)
+		$('#tt2').html(fecha+", "+data.weather[0].description)
+		$('#grados').html(Math.round(grados)+'°')	
+		
+		sunset = formatTime(data.sys.sunset);
+		sunset = sunset.split(':')
+		
+		sunrise = formatTime(data.sys.sunrise);
+		sunrise = sunrise.split(':')
+		
+		horasM= (parseInt(sunrise[0])*60) + parseInt(sunrise[1]) 
+		horasT= (parseInt(sunset[0])*60) + parseInt(sunset[1]) 
+		horasA= (parseInt(hora)*60) + parseInt(minuto) 
+
+ico = data.weather[0].id
+cadena = data.weather[0].icon
+
+if(horasA >= horasM && hora <= horasT){
+	ico2 = ico+'d'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo6').fadeIn()
+	$('#clima').css('background-color','#3f5b76')
+}else{
+	ico2 = ico+'n'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo5').fadeIn()
+	$('#clima').css('background-color','#022f4b')
+}
+
+
+		 $('#icono').attr('src', 'iconos/'+ico2+'.png');
+		 $('#pollo').css('opacity','0.0')
+		 $('#pollo').delay(1000).animate({opacity:'1'}, 800);
+		 
+		 if(ico==3 || ico==27 || ico==29 || ico==31 || ico==33 || ico==38 || ico==39){
+		 	$('#pollo').attr('src', 'animaciones/an'+data.query.results.channel.item.condition.code+'/an1.html');
+		 }else{
+		 	$('#pollo').attr('src', 'animaciones/an1/an1.html');
+		 }
+		
+    });
+	
+	
+	
+	
+	
+	var ResultHora = $.getJSON("http://api.openweathermap.org/data/2.5/forecast?lat=19.428471&lon=-99.127663&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (dataHora)
+    {
+		var hor1 = formatTime(dataHora.list[0].dt);
+		$('#hora1').html(hor1)
+		grados1 = dataHora.list[0].main.temp
+		if(gg==1){
+		 	grados1 = (grados1 -32)/1.8
+		 }
+		$('#gra1').html(Math.round(grados1)+'°')
+		hor1 = hor1.split(':')
+		var ho1= (parseInt(hor1[0])*60) + parseInt(hor1[1]) 
+		var icon1=dataHora.list[0].weather[0].id
+		if(ho1 >= horasM && ho1 <= horasT){
+			icon1 = icon1+'d'
+		}else{
+			icon1 = icon1+'n'
+		}
+		$('#ico1').attr('src', 'iconos/'+icon1+'.png');
+		
+		
+		
+		
+		var hor2 = formatTime(dataHora.list[1].dt);
+		$('#hora2').html(hor2)
+		grados2 = dataHora.list[1].main.temp
+		if(gg==1){
+		 	grados2 = (grados2 -32)/1.8
+		 }
+		$('#gra2').html(Math.round(grados2)+'°')
+		hor2 = hor2.split(':')
+		var ho2= (parseInt(hor2[0])*60) + parseInt(hor2[1]) 
+		var icon2=dataHora.list[1].weather[0].id
+		if(ho2 >= horasM && ho2 <= horasT){
+			icon2 = icon2+'d'
+		}else{
+			icon2 = icon2+'n'
+		}
+		$('#ico2').attr('src', 'iconos/'+icon2+'.png');
+		
+		
+		
+		var hor3 = formatTime(dataHora.list[2].dt);
+		$('#hora3').html(hor3)
+		grados3 = dataHora.list[2].main.temp
+		if(gg==1){
+		 	grados3 = (grados3 -32)/1.8
+		 }
+		$('#gra3').html(Math.round(grados3)+'°')
+		hor3 = hor3.split(':')
+		var ho3= (parseInt(hor3[0])*60) + parseInt(hor3[1]) 
+		var icon3=dataHora.list[2].weather[0].id
+		if(ho3 >= horasM && ho3 <= horasT){
+			icon3 = icon3+'d'
+		}else{
+			icon3 = icon3+'n'
+		}
+		$('#ico3').attr('src', 'iconos/'+icon3+'.png');
+		
+		
+		
+		var hor4 = formatTime(dataHora.list[3].dt);
+		$('#hora4').html(hor4)
+		grados4 = dataHora.list[3].main.temp
+		if(gg==1){
+		 	grados4 = (grados4 -32)/1.8
+		 }
+		$('#gra4').html(Math.round(grados4)+'°')
+		hor4 = hor4.split(':')
+		var ho4= (parseInt(hor4[0])*60) + parseInt(hor4[1]) 
+		var icon4=dataHora.list[3].weather[0].id
+		if(ho4 >= horasM && ho4 <= horasT){
+			icon4 = icon4+'d'
+		}else{
+			icon4 = icon4+'n'
+		}
+		$('#ico4').attr('src', 'iconos/'+icon4+'.png');
+		
+		
+		
+		
+		
+		var hor5 = formatTime(dataHora.list[4].dt);
+		$('#hora5').html(hor5)
+		grados5 = dataHora.list[4].main.temp
+		if(gg==1){
+		 	grados5 = (grados5 -32)/1.8
+		 }
+		$('#gra5').html(Math.round(grados5)+'°')
+		hor5 = hor5.split(':')
+		var ho5= (parseInt(hor5[0])*60) + parseInt(hor5[1]) 
+		var icon5=dataHora.list[4].weather[0].id
+		if(ho5 >= horasM && ho5 <= horasT){
+			icon5 = icon5+'d'
+		}else{
+			icon5 = icon5+'n'
+		}
+		$('#ico5').attr('src', 'iconos/'+icon5+'.png');
+		
+		
+		
+		
+		var hor6 = formatTime(dataHora.list[5].dt);
+		$('#hora6').html(hor6)
+		grados6 = dataHora.list[5].main.temp
+		if(gg==1){
+		 	grados6 = (grados6 -32)/1.8
+		 }
+		$('#gra6').html(Math.round(grados6)+'°')
+		hor6 = hor6.split(':')
+		var ho6= (parseInt(hor6[0])*60) + parseInt(hor6[1]) 
+		var icon6=dataHora.list[5].weather[0].id
+		if(ho6 >= horasM && ho6 <= horasT){
+			icon6 = icon6+'d'
+		}else{
+			icon6 = icon6+'n'
+		}
+		$('#ico6').attr('src', 'iconos/'+icon6+'.png');
+		
+    });
+	
+	
+	
+	
+	var ResultDia = $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?lat=19.428471&lon=-99.127663&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827&cnt=5", "",
+    function (dataDia)
+    {
+		
+	
+var weekday = new Array(7);
+weekday[0]=  "SUN";
+weekday[1] = "MON";
+weekday[2] = "TUE";
+weekday[3] = "WED";
+weekday[4] = "THU";
+weekday[5] = "FRI";
+weekday[6] = "SAT";
+		
+		var milliseconds1 = dataDia.list[0].dt * 1000;
+        var date1 = new Date(milliseconds1);
+		var n1 = weekday[date1.getDay()];
+		$('#dia1').html(n1)
+		$('#ic1').attr('src', 'iconos/'+dataDia.list[0].weather[0].id+'d.png');
+		
+		var milliseconds2 = dataDia.list[1].dt * 1000;
+        var date2 = new Date(milliseconds2);
+		var n2 = weekday[date2.getDay()];
+		$('#dia2').html(n2)
+		$('#ic2').attr('src', 'iconos/'+dataDia.list[1].weather[0].id+'d.png');
+		
+		var milliseconds3 = dataDia.list[2].dt * 1000;
+        var date3 = new Date(milliseconds3);
+		var n3 = weekday[date3.getDay()];
+		$('#dia3').html(n3)
+		$('#ic3').attr('src', 'iconos/'+dataDia.list[2].weather[0].id+'d.png');
+		
+		var milliseconds4 = dataDia.list[3].dt * 1000;
+        var date4 = new Date(milliseconds4);
+		var n4 = weekday[date4.getDay()];
+		$('#dia4').html(n4)
+		$('#ic4').attr('src', 'iconos/'+dataDia.list[3].weather[0].id+'d.png');
+		
+		var milliseconds5 = dataDia.list[4].dt * 1000;
+        var date5 = new Date(milliseconds5);
+		var n5 = weekday[date5.getDay()];
+		$('#dia5').html(n5)
+		$('#ic5').attr('src', 'iconos/'+dataDia.list[4].weather[0].id+'d.png');
+    });
+	
+	
+
+	 }else{
+	 
+	 
+	 
+	 
+	 var Result = $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (data)
+    {
+		grados = data.main.temp
+		
+		if(gg==1){
+		 	grados = (grados -32)/1.8
+		 }
+		
+		$('#tt1').html(data.name)
+		$('#tt2').html(fecha+", "+data.weather[0].description)
+		$('#grados').html(Math.round(grados)+'°')	
+		
+		sunset = formatTime(data.sys.sunset);
+		sunset = sunset.split(':')
+		
+		sunrise = formatTime(data.sys.sunrise);
+		sunrise = sunrise.split(':')
+		
+		horasM= (parseInt(sunrise[0])*60) + parseInt(sunrise[1]) 
+		horasT= (parseInt(sunset[0])*60) + parseInt(sunset[1]) 
+		horasA= (parseInt(hora)*60) + parseInt(minuto) 
+
+ico = data.weather[0].id
+cadena = data.weather[0].icon
+
+if(horasA >= horasM && hora <= horasT){
+	ico2 = ico+'d'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo6').fadeIn()
+	$('#clima').css('background-color','#3f5b76')
+}else{
+	ico2 = ico+'n'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo5').fadeIn()
+	$('#clima').css('background-color','#022f4b')
+}
+
+
+		 $('#icono').attr('src', 'iconos/'+ico2+'.png');
+		 $('#pollo').css('opacity','0.0')
+		 $('#pollo').delay(1000).animate({opacity:'1'}, 800);
+		 
+		 if(ico==3 || ico==27 || ico==29 || ico==31 || ico==33 || ico==38 || ico==39){
+		 	$('#pollo').attr('src', 'animaciones/an'+data.query.results.channel.item.condition.code+'/an1.html');
+		 }else{
+		 	$('#pollo').attr('src', 'animaciones/an1/an1.html');
+		 }
+		
+    });
+	
+	
+	
+	
+	
+	var ResultHora = $.getJSON("http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (dataHora)
+    {
+		var hor1 = formatTime(dataHora.list[0].dt);
+		$('#hora1').html(hor1)
+		grados1 = dataHora.list[0].main.temp
+		if(gg==1){
+		 	grados1 = (grados1 -32)/1.8
+		 }
+		$('#gra1').html(Math.round(grados1)+'°')
+		hor1 = hor1.split(':')
+		var ho1= (parseInt(hor1[0])*60) + parseInt(hor1[1]) 
+		var icon1=dataHora.list[0].weather[0].id
+		if(ho1 >= horasM && ho1 <= horasT){
+			icon1 = icon1+'d'
+		}else{
+			icon1 = icon1+'n'
+		}
+		$('#ico1').attr('src', 'iconos/'+icon1+'.svg');
+		
+		
+		
+		
+		var hor2 = formatTime(dataHora.list[1].dt);
+		$('#hora2').html(hor2)
+		grados2 = dataHora.list[1].main.temp
+		if(gg==1){
+		 	grados2 = (grados2 -32)/1.8
+		 }
+		$('#gra2').html(Math.round(grados2)+'°')
+		hor2 = hor2.split(':')
+		var ho2= (parseInt(hor2[0])*60) + parseInt(hor2[1]) 
+		var icon2=dataHora.list[1].weather[0].id
+		if(ho2 >= horasM && ho2 <= horasT){
+			icon2 = icon2+'d'
+		}else{
+			icon2 = icon2+'n'
+		}
+		$('#ico2').attr('src', 'iconos/'+icon2+'.svg');
+		
+		
+		
+		var hor3 = formatTime(dataHora.list[2].dt);
+		$('#hora3').html(hor3)
+		grados3 = dataHora.list[2].main.temp
+		if(gg==1){
+		 	grados3 = (grados3 -32)/1.8
+		 }
+		$('#gra3').html(Math.round(grados3)+'°')
+		hor3 = hor3.split(':')
+		var ho3= (parseInt(hor3[0])*60) + parseInt(hor3[1]) 
+		var icon3=dataHora.list[2].weather[0].id
+		if(ho3 >= horasM && ho3 <= horasT){
+			icon3 = icon3+'d'
+		}else{
+			icon3 = icon3+'n'
+		}
+		$('#ico3').attr('src', 'iconos/'+icon3+'.svg');
+		
+		
+		
+		var hor4 = formatTime(dataHora.list[3].dt);
+		$('#hora4').html(hor4)
+		grados4 = dataHora.list[3].main.temp
+		if(gg==1){
+		 	grados4 = (grados4 -32)/1.8
+		 }
+		$('#gra4').html(Math.round(grados4)+'°')
+		hor4 = hor4.split(':')
+		var ho4= (parseInt(hor4[0])*60) + parseInt(hor4[1]) 
+		var icon4=dataHora.list[3].weather[0].id
+		if(ho4 >= horasM && ho4 <= horasT){
+			icon4 = icon4+'d'
+		}else{
+			icon4 = icon4+'n'
+		}
+		$('#ico4').attr('src', 'iconos/'+icon4+'.svg');
+		
+		
+		
+		
+		
+		var hor5 = formatTime(dataHora.list[4].dt);
+		$('#hora5').html(hor5)
+		grados5 = dataHora.list[4].main.temp
+		if(gg==1){
+		 	grados5 = (grados5 -32)/1.8
+		 }
+		$('#gra5').html(Math.round(grados5)+'°')
+		hor5 = hor5.split(':')
+		var ho5= (parseInt(hor5[0])*60) + parseInt(hor5[1]) 
+		var icon5=dataHora.list[4].weather[0].id
+		if(ho5 >= horasM && ho5 <= horasT){
+			icon5 = icon5+'d'
+		}else{
+			icon5 = icon5+'n'
+		}
+		$('#ico5').attr('src', 'iconos/'+icon5+'.svg');
+		
+		
+		
+		
+		var hor6 = formatTime(dataHora.list[5].dt);
+		$('#hora6').html(hor6)
+		grados6 = dataHora.list[5].main.temp
+		if(gg==1){
+		 	grados6 = (grados6 -32)/1.8
+		 }
+		$('#gra6').html(Math.round(grados6)+'°')
+		hor6 = hor6.split(':')
+		var ho6= (parseInt(hor6[0])*60) + parseInt(hor6[1]) 
+		var icon6=dataHora.list[5].weather[0].id
+		if(ho6 >= horasM && ho6 <= horasT){
+			icon6 = icon6+'d'
+		}else{
+			icon6 = icon6+'n'
+		}
+		$('#ico6').attr('src', 'iconos/'+icon6+'.svg');
+		
+    });
+	
+	
+	
+	
+	var ResultDia = $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827&cnt=5", "",
+    function (dataDia)
+    {
+		
+	
+var weekday = new Array(7);
+weekday[0]=  "SUN";
+weekday[1] = "MON";
+weekday[2] = "TUE";
+weekday[3] = "WED";
+weekday[4] = "THU";
+weekday[5] = "FRI";
+weekday[6] = "SAT";
+		
+		var milliseconds1 = dataDia.list[0].dt * 1000;
+        var date1 = new Date(milliseconds1);
+		var n1 = weekday[date1.getDay()];
+		$('#dia1').html(n1)
+		$('#ic1').attr('src', 'iconos/'+dataDia.list[0].weather[0].id+'d.svg');
+		
+		var milliseconds2 = dataDia.list[1].dt * 1000;
+        var date2 = new Date(milliseconds2);
+		var n2 = weekday[date2.getDay()];
+		$('#dia2').html(n2)
+		$('#ic2').attr('src', 'iconos/'+dataDia.list[1].weather[0].id+'d.svg');
+		
+		var milliseconds3 = dataDia.list[2].dt * 1000;
+        var date3 = new Date(milliseconds3);
+		var n3 = weekday[date3.getDay()];
+		$('#dia3').html(n3)
+		$('#ic3').attr('src', 'iconos/'+dataDia.list[2].weather[0].id+'d.svg');
+		
+		var milliseconds4 = dataDia.list[3].dt * 1000;
+        var date4 = new Date(milliseconds4);
+		var n4 = weekday[date4.getDay()];
+		$('#dia4').html(n4)
+		$('#ic4').attr('src', 'iconos/'+dataDia.list[3].weather[0].id+'d.svg');
+		
+		var milliseconds5 = dataDia.list[4].dt * 1000;
+        var date5 = new Date(milliseconds5);
+		var n5 = weekday[date5.getDay()];
+		$('#dia5').html(n5)
+		$('#ic5').attr('src', 'iconos/'+dataDia.list[4].weather[0].id+'d.svg');
+    });
+	 
+	 
+	 
+	 }
+	
+	
+	
+	var total=0
+	var Result1 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22los%20angeles%22)&format=json", "",
+    function (data1)
+    {
+		ico1 = data1.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result2 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Hawaii%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data2)
+    {
+		ico2 = data2.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result3 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22ciudad%20de%20mexico%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data3)
+    {
+		ico3 = data3.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result4 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22new%20york%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data4)
+    {
+		ico4 = data4.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result5 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22lima%20peru%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data5)
+    {
+		ico5 = data5.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result6 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22sao%20paulo%20brasil%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data6)
+    {
+		ico6 = data6.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result7 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22paris%20francia%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data7)
+    {
+		ico7 = data7.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result8 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22cairo%20egipto%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data8)
+    {
+		ico8 = data8.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result9 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Johannesburg%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data9)
+    {
+		ico9 = data9.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result10 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22moscow%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data10)
+    {
+		ico10 = data10.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result11 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22delhi%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data11)
+    {
+		ico11 = data11.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result12 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22tokio%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data12)
+    {
+		ico12 = data12.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+	var Result13 = $.getJSON("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Sydney%20australia%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", "",
+    function (data13)
+    {
+		ico13 = data13.query.results.channel.item.condition.code
+		total++
+		if(total==13){
+			infi()
+		}
+    });
+
+}
+
+
+</script>
+
+<!--///////////INICIO///////////-->
+<div style="width:100%; height:100%; position:absolute; overflow:hidden">
+<div id="fondo" style="width:100%; height:115%; position:absolute">
+<div id="todo" style="position:absolute; width:100%; height:87%;">
+
+<div style="width:100%; height:24px; position:absolute; z-index:1000; top:0px; left:0px; margin-top:-24px; background-image:url(imagenes/cuadro.png); background-size:auto 100%">
+<img id="refre" src="imagenes/refresh_icon.svg" style="position:absolute; left:50%; margin-left:-50px; bottom:0px; margin-bottom:40px;" width="12px"/>
+<img src="imagenes/refresh_text.svg" style="position:absolute; left:50%; margin-left:-30px; bottom:0px; margin-bottom:40px;" width="70px"/>
+
+
+
+</div>
+
+
+
+<div id="opciones" style="visibility:hidden"> 
+  
+
+
+    <img src="imagenes/send.png" style="position:absolute; cursor:pointer; height:7%; top:18%"/> 
+	<img id="un1" src="imagenes/units.png" style="position:absolute; cursor:pointer; height:7%; top:26%; visibility:hidden"/>
+    <img id="un2" src="imagenes/units2.png" style="position:absolute; cursor:pointer; height:7%; top:26%"/>
+    <img src="imagenes/share.png" style="position:absolute; cursor:pointer; height:7%; top:34%"/>
+    <img src="imagenes/rate.png" style="position:absolute; cursor:pointer; height:7%; top:42%"/>
+    <img src="imagenes/privacy.png" style="position:absolute; cursor:pointer; height:7%; top:50%"/>
+    
+    
+    <div id="u1" style="position:absolute; top:26%; height:7%; width:100%; cursor:pointer"></div>
+    
+    
+    <script>
+		var cen=0
+		var gr
+		
+		if(gg==1){
+			$('#un1').css('visibility', 'visible')
+			$('#un2').css('visibility', 'hidden')
+		}
+		
+     	$('#u1').click(function(){
+			if(cen==1){
+			$('#un1').css('visibility', 'hidden')
+			$('#un2').css('visibility', 'visible')
+			$('#grados').html(grados+'°')
+			cen=0
+			localStorage.setItem("grados", 0);
+			}else{
+			$('#un1').css('visibility', 'visible')
+			$('#un2').css('visibility', 'hidden')
+			gr = (grados -32)/1.8
+			gr = Math.round(gr)
+			$('#grados').html(gr+'°')
+			cen=1
+			localStorage.setItem("grados", 1);
+			}
+		})
+		
+    </script>
+     
+     
+    
+    <img src="imagenes/data.png" style="position:absolute; cursor:pointer; height:11%; top:85%; margin-left:-40px; left:50%"/>
+    
+    
+    <img src="imagenes/casita.png" style="position:absolute; cursor:pointer; height:10%; top:70%; margin-left:-50px; left:47%"/>
+    
+    
+</div>
+
+   
+   
+<div id="mapa" style="visibility:hidden">
+
+ <div class="ib-main-wrapper jumbotron" id="ib-main-wrapper" style="cursor: move; margin:0px; padding:0px;" tabindex="0">
+  <div class="ib-main ui-draggable" id="wall" style="position: relative; cursor: move; top: 0px; left: -3802.40625px; height: 500px; margin:0px; padding:0px">
+  	
+  </div>
+  </div>
+
+      
+
+    <script type="text/javascript">
+	
+	
+	function infi(){
+	var $window = $(window);
+	var height = $window.height();
+	
+    var ancho= height * 1.5
+	var alto= height
+	
+	
+  
+    var $ibMainWrapper = $('#ib-main-wrapper');
+    var $ibWrapper = $('#wall'); 
+    var draggable_options = { axis: 'x' };
+    var tile_width = ancho;
+    var tile_height = alto; 
+    var easing = false;
+
+    var img1 = '<img alt="" class="focal-point up-6" src="imagenes/mapa.png" style="width:100%"><div class="globito1" style="left:14%; top:35%"><img class="icono1" src="iconos/'+ico1+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t1" class="globito_texto">LA</div></div><div class="globito2" style="left:7%; top:43.5%"><img id="icono2" src="iconos/'+ico2+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t2" class="globito_texto">Hawaii</div></div><div class="globito3" style="left:19%; top:42%"><img id="icono3" src="iconos/'+ico3+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t3" class="globito_texto">México</div></div><div class="globito4" style="left:25%; top:33%"><img id="icono4" src="iconos/'+ico4+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t4" class="globito_texto">New York</div></div><div class="globito5" style="left:25%; top:55%"><img id="icono5" src="iconos/'+ico5+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t5" class="globito_texto">Lima</div></div><div class="globito1" style="left:32%; top:60%"><img id="icono6" src="iconos/'+ico6+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t6" class="globito_texto">Sao Paulo</div></div><div class="globito2" style="left:47%; top:30%"><img id="icono7" src="iconos/'+ico7+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t7" class="globito_texto">Paris</div></div><div class="globito3" style="left:53%; top:40%"><img id="icono8" src="iconos/'+ico8+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t8" class="globito_texto">Cairo</div></div><div class="globito4" style="left:52%; top:62%"><img id="icono9" src="iconos/'+ico9+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t9" class="globito_texto">Johannesburg</div></div><div class="globito5" style="left:57%; top:27%"><img id="icono10" src="iconos/'+ico10+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t10" class="globito_texto">Moscow</div></div><div class="globito1" style="left:65%; top:36%"><img id="icono11" src="iconos/'+ico11+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t11" class="globito_texto">Delhi</div></div><div class="globito2" style="left:81%; top:35%"><img id="icono12" src="iconos/'+ico12+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t12" class="globito_texto">Tokio</div></div><div class="globito3" style="left:85%; top:65%"><img id="icono13" src="iconos/'+ico13+'.svg" width="70%" style="position:absolute; top:13%; left:15%"/><div id="t13" class="globito_texto">Sidney</div></div>'
+    var images = [img1];
+
+   /*
+ * jQuery Infinite Wall
+ * Version 1.3
+ * Copyright (c) 2013 Gianluca Cassarino (http://www.quovadiscom.com)
+ * 
+ * Derived from http://tympanus.net/codrops/2011/10/07/draggable-image-boxes-grid/
+ * 
+ * additions:
+ * Infinte scroll grid 
+ * Alternative kinetic easing based on jQuery UI
+ * Touch screen devices support
+ * Grid tiles manager optimized for smooth scroll (tested on Firefox, Chrome, Opera)
+ * Visual notifications for images errors
+ * Focal point experimental feature for image thumbnail positions
+ * 
+ * Requires:
+ * jQuery http://jquery.com
+ * jQuery Infinite Drag http://ianli.com/infinitedrag/ for Usage
+ * jQuery tmpl Templating https://github.com/codepb/jquery-template
+ * jQuery UI for dragging and kinetic emulation
+ * jQuery UI touch-punch for Touch Event Support
+ * 
+ * 
+ * 
+ * 
+ * 
+ * Versions:
+ * 1.3
+ * - fix some offset issues on image preview
+ * 1.2
+ * - minor fixes for Chrome
+ * - css overflow: hidden during closing preview animation 
+ * 1.1
+ * - major grid optimizations
+ * - supported browsers: Firefox, Chrome, Opera
+ * 1.0
+ * - Initial implementation
+ */
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('3 1K(c){P.1L(c,3(i,a){5 b=$(a).r(\'7\').H(\'I\');P.2p(b,3(){}).2q(3(){}).2r(3(){}).2s(3(){})})}$.2t.1M=3(){5 a=$(A);5 b={l:a.1r(),j:a.1N()};b.18=b.j+a.m();b.19=b.l+a.9();5 c=k.w();c.18=c.j+k.2u();c.19=c.l+k.1s();E(!(b.18<c.j||b.j>c.18||b.19<c.l||b.l>c.19))};5 $1t=$(\'#4-2v-2w\');5 $D=$(\'#1O\');5 1a={};5 1P;5 1u;5 $F;5 1v;5 Q=u;5 w=$1t.w();1K(1b);$(1Q).2x(3(){5 g=0;5 h={m:(1R!=\'\'?1R:1S),9:(1T!=\'\'?1T:1S),2y:0,2z:0,2A:3(a,b,c){a.2B(1b[g]);6(g>=1b.U-1){g=0}J{g++}6(a.s(\'a\').s(\'7\').X(\'Y\')==\'\'){a.s(\'a\').s(\'7\').X(\'Y\',a.s(\'a\').s(\'7\').H(\'I\'));a.s(\'a\').s(\'7\').1c(\'1U\');a.s(\'a\').1c(\'1U\')}}};1u=P.1u("#1O",1V,h);1v=(3(){Q=u,B=-1,v=u,$F=$D.r(\'z.1d > a\'),$K=$F.1e(\'.4-o\'),V=$K.U,Z=3(){$F=$D.r(\'z.1d > a\');$K=$F.1e(\'.4-o\');V=$K.U;$K.1c(\'4-1w\');1W();1x()},1W=3(){1y();$D.1z({2C:3(){Q=L},1X:3(){5 a;3 1Y(){Q=u;Z();1Z(a)}6(!1f){a=1A(1Y,2D)}}});6(1f){$D.1z({20:3(){E $(\'<z></z>\').t(\'10\',0)}});$D.2E("2F",3(a,b){5 p=b.20.2G();$(k).1X().M({l:1V.2H==\'x\'?0:p.l-w.l,j:p.j-w.j},21,\'2I\',3(){Q=u;$F=$D.r(\'z.1d > a\');$K=$F.1e(\'.4-o\');V=$K.U;1x()})})}},1y=3(){5 a=$(\'#4-l\').1s(L)+$(\'#2J\').1s(L)+2K($F.t(\'2L-l\'));$D.t(\'9\',$(A).9()-a)},1x=3(){$F.R(\'11.S\',3(a){6(!Q)22($(k));E u});$(A).R(\'23.S\',3(a){1y();$D.1z();$(\'#4-7-n, #4-o-n\').t({m:$(A).m(),9:$(A).9()})})},22=3(a){6(v)E u;$("24").t(\'1g\',\'25\');6(a.26(\'4-o\')){v=L;B=a.27(\'.4-o\');28(a,3(){v=u})}J{v=L;B=a.27(\'.4-1w\');29(a,3(){v=u})}},29=3(d,e){5 f=d.s(\'7\').X(\'Y\'),W=d.s(\'q\').12(),2a={I:f,W:W};d.1c(\'4-N\');1B(f,3(){d.1C(\'4-N\');5 b=($(\'#4-7-n\').U>0);6(!b)$(\'#2M\').2b(2a).2c($1t);J $(\'#4-7-n\').s(\'7.4-n-7\').H(\'I\',f).T().r(\'q.4-n-13\').12(W);5 c=1h(f);d.1C(\'4-7-N\');$(\'#4-7-n\').t({m:d.m(),9:d.9(),j:d.w().j,l:d.w().l}).s(\'7.4-n-7\').1i().t({m:c.m,9:c.9,j:c.j,l:0}).2N(14).T().O().M({m:$(A).m(),j:0},1j,\'1k\',3(){$(k).M({9:$(A).9(),l:0+$(1Q).1r()},14,3(){5 a=$(k);a.r(\'q.4-n-13, q.4-C\').O();6(V>1)a.r(\'z.4-1l\').O();6(e)e.1D()})});6(!b)2d()})},28=3(b,c){5 d=($(\'#4-o-n\').U>0),G=b.s(\'z.4-G\').1m(),o=b.s(\'z.4-o-1E\').1m(),2e={G:G,o:o};6(!d)$(\'#2O\').2b(2e).2c($D);$(\'#4-o-n\').t({m:b.m(),9:b.9(),j:b.w().j,l:b.w().l}).O().M({m:$(A).m(),j:0},1j,\'1k\',3(){$(k).M({9:$(A).9(),l:0},14,3(){5 a=$(k),$G=a.r(\'z.4-G\'),$o=a.r(\'z.4-o-1E\'),$C=a.r(\'q.4-C\');6(d){$G.1m(G);$o.1m(o)}$G.O();$o.O();$C.O();6(c)c.1D()})});6(!d)2f()},1B=3(a,b){$(\'<7/>\').2P(3(){6(b)b.1D()}).H(\'I\',a)},2d=3(){5 c=$(\'#4-7-n\');c.r(\'q.4-1l-1F\').R(\'11.S\',3(a){1G(\'1F\')}).T().r(\'q.4-1l-1H\').R(\'11.S\',3(a){1G(\'1H\')}).T().r(\'q.4-C\').R(\'11.S\',3(a){2g()});$(A).R(\'23.S\',3(a){5 b=c.s(\'7.4-n-7\'),1n=1h(b.H(\'I\'));b.t({m:1n.m,9:1n.9,j:1n.j,l:0})});5 d=8;5 f=1A(3(e){5 a=P(\'q.4-C\').t(\'10\');6(a<1){P(\'q.4-C\').t(\'10\',1)}J{P(\'q.4-C\').t(\'10\',0.2)}6(--d==0){1Z(f);P(\'q.4-C\').t(\'10\',\'\')}},2Q)},2f=3(){$(\'#4-o-n\').r(\'q.4-C\').R(\'11.S\',3(a){2h()})},1G=3(c){6(v)E u;v=L;5 d=$(\'#4-7-n\'),$N=d.r(\'z.4-N-2R\');$N.O();6(c===\'1H\'){(B===V-1)?B=0:++B}J 6(c===\'1F\'){(B===0)?B=V-1:--B}5 e=$K.1I(B);5 f=e.s(\'7\').X(\'Y\'),W=e.s(\'q\').12();1B(f,3(){$N.1i();5 a=1h(f);d.s(\'7.4-n-7\').H(\'I\',f).t({m:a.m,9:a.9,j:a.j,l:0}).T().r(\'q.4-n-13\').12(W);5 b=d.r(\'q.4-n-13\');6(b.12()==\'\'){b.t("2i","2S")}J{b.t("2i","2T")}$D.1r(e.w().l).1N(e.w().j);v=u})},2g=3(){6(v)E u;v=L;5 a=$K.1I(B);$("24").t(\'1g\',\'\');$(\'#4-7-n\').r(\'q.4-n-13, z.4-1l, q.4-C\').1i().T().t(\'1g\',\'25\').M({9:a.9(),l:a.w().l},1j,\'1k\',3(){$(k).M({m:a.m(),j:a.w().j},14,3(){$(k).2j(3(){v=u;$(k).t(\'1g-y\',\'2U\')})})})},2h=3(){6(v)E u;v=L;5 a=$F.1e(\'.4-1w\').1I(B);$(\'#4-o-n\').r(\'z.4-G, z.4-o-1E, q.4-C\').1i().T().M({9:a.9(),l:a.w().l},1j,\'1k\',3(){$(k).M({m:a.m(),j:a.w().j},14,3(){$(k).2j(3(){v=u})})})},1h=3(a){5 b=2V 2W();b.I=a;5 c=$(A).m(),15=$(A).9(),2k=15/c,2l=b.m,2m=b.9,1o=2m/2l,16,17,2X,2Y;6(2k>1o){17=15;16=15/1o}J{17=c*1o;16=c}E{m:16,9:17,j:(c-16)/2,l:(15-17)/2}};E{Z:Z}})();1v.Z()});$(3(){5 c=3(a){6(a){2Z(5 b 30 a){6(31 a[b]=="32"){6($.33(a[b])){2n a[b]}J{c(a[b])}}}E L}};5 d=(1f)?34:21;1A(3(){6(Q){$(".1d").1L(3(a){6($(k).1M()){}J{1p=$(k).H(\'1p\');1q=$(k).H(\'1q\');1a[1p][1q]=35;2n 1a[1p][1q];6($(\'a\',k).26(\'4-N\'))v=u;5 b=\'1b/36.37\';$(\'7\',k).H(\'I\',b);$(\'7\',k).2o(\'X-Y\');$(\'7\',k).2o(\'38\');$(\'7\',k).1C();$(\'7\',k).39();$(\'7\',k).1J();$(\'q\',k).1J();$(k).1J()}});6(1f){c(1a);1P()}}},d)});',62,196,'|||function|ib|var|if|img||height||||||||||left|this|top|width|preview|content||span|find|children|css|false|isAnimating|offset|||div|window|current|close|ibWrapper|return|ibItems|teaser|attr|src|else|ibImgItems|true|animate|loading|show|jQuery|kinetic_moving|bind|ibTemplate|end|length|imgItemsCount|description|data|largesrc|init|opacity|click|text|descr|400|w_h|new_w|new_h|right|bottom|grid|images|addClass|_tile|not|easing|overflow|getImageDim|hide|500|easeOutExpo|nav|html|dim|r_i|col|row|scrollTop|outerHeight|ibMainWrapper|infinitedrag|Template|image|initEvents|setWrapperSize|draggable|setInterval|preloadImage|removeClass|call|full|prev|navigate|next|eq|remove|preload|each|isOnScreen|scrollLeft|wall|update_tiles|document|tile_width|100|tile_height|warning|draggable_options|loadKinetic|stop|do_stop|clearInterval|helper|1000|openItem|resize|body|hidden|hasClass|index|loadContentItem|loadImgPreview|largeImageData|tmpl|insertAfter|initImgPreviewEvents|contentData|initContentPreviewEvents|closeImgPreview|closeContentPreview|display|fadeOut|r_w|i_w|i_h|delete|removeAttr|get|done|fail|always|fn|outerWidth|main|wrapper|ready|start_col|start_row|oncreate|append|start|300|on|drag|position|axis|easeOutCirc|header|parseFloat|margin|previewTmpl|fadeIn|contentTmpl|load|1200|large|none|block|scroll|new|Image|new_left|new_top|for|in|typeof|object|isEmptyObject|200|undefined|1px|gif|alt|removeData'.split('|'),0,{}))
+
+      var container_offset =  $('#ib-main-wrapper').offset();
+      $('#go-on').tooltip();
+      function direction(){
+	if( parseInt($( "#wall" ).children('div:first-child').attr('col')) < parseInt($( "#wall" ).children('div:last-child').attr('col')) ){
+	  return ( container_offset.left - ( $( "#wall" ).children('div:last-child').position().left - ( tile_width * ( $( "#wall" ).children('div').length - 3 ) ) ) )+"px" 
+	} else {
+	  return ( container_offset.left - ( $( "#wall" ).children('div:last-child').position().left ) )+"px"
+	}	
+      }      
+      $( "#go-on" ).click(function() {
+	$(this).attr("disabled","disabled");
+	$( "#wall" ).animate({	    
+	  left: direction() ,
+	  step: kinetic_moving = true
+	  }, 400 , "easeOutExpo",  function() {
+	      kinetic_moving = false;    
+	      $ibItems = $ibWrapper.find('div._tile > a');
+	      $ibImgItems = $ibItems.not('.ib-content');
+	      imgItemsCount = $ibImgItems.length;	  
+	      initEvents();	
+	      $( "#go-on" ).removeAttr("disabled");
+	    });
+      });
+	}
+    </script>  
+
+</div>
+
+
+
+
+<div id="clima" style="background-color:#000"> 
+<!--033451
+#a90808-->
+
+  <img id="fondo1" src="imagenes/fondo1.png" height="100%" style="position:absolute; display:none"/>
+  <img id="fondo2" src="imagenes/fondo2.png" height="100%" style="position:absolute; display:none"/>
+  <img id="fondo3" src="imagenes/fondo3.png" height="100%" style="position:absolute; display:none"/>
+  <img id="fondo4" src="imagenes/fondo4.png" height="100%" style="position:absolute; display:none"/>
+  <img id="fondo5" src="imagenes/fondo5.png" height="100%" style="position:absolute; display:none"/>
+  <img id="fondo6" src="imagenes/fondo6.png" height="100%" style="position:absolute; display:none"/>
+  
+<div id="tt0" class="texto2" style="top:0.1%; left:14%; font-weight:500; visibility:hidden1; text-transform: uppercase; width:86%; text-align:left">hola</div>
+<div id="tt1" class="texto2" style="top:3.1%; left:14%; font-weight:500; visibility:hidden; text-transform: uppercase; width:86%; text-align:left"></div>
+  <div id="tt2" class="texto2" style="top:7%; left:14%; font-weight:600; visibility:hidden"></div>
+  
+  <div id="ubi" class="texto2" style="top:9.5%; left:14%; font-weight:500; visibility:hidden">positioning</div>
+  
+  
+  <div style="position:absolute; width:100%; height:10%; top:14%">
+  	
+    <div class="dias2">
+    	<span id="hora1" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra1" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico1" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px"/>
+        
+        
+    </div>
+    
+    <div class="dias2">
+    	<span id="hora2" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra2" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico2" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px;"/>
+    </div>
+    
+    <div class="dias2">
+    	<span id="hora3" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra3" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico3" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px;"/>
+    </div>
+    
+    <div class="dias2">
+    	<span id="hora4" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra4" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico4" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px;"/>
+    </div>
+    
+    <div class="dias2">
+    	<span id="hora5" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra5" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico5" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px;"/>
+    </div>
+    
+    <div class="dias2">
+    	<span id="hora6" style="position:absolute; width:100%; text-align:center; left:0px;"></span>
+        <span id="gra6" style="position:absolute; width:100%; text-align:center; left:0px; top:25%"></span>
+    	<img id="ico6" height="45%" style="position:absolute; top:50%; left:50%; margin-left:-16px;"/>
+    </div>
+  
+  </div>
+  
+  
+  <script>
+  ani()
+  function ani(){
+	  setTimeout("$('#ubi').html('positioning.')", 500)
+	  setTimeout("$('#ubi').html('positioning..')", 1000)
+	  setTimeout("$('#ubi').html('positioning...')", 1500)
+	  setTimeout("$('#ubi').html('positioning')", 2000)
+	  setTimeout('ani()', 2500)
+  }
+  </script>
+  
+  <iframe id="pollo" width="750" height="550" style="position:absolute; left:50%; border:none; bottom:10%; margin-left:-395px; overflow:hidden; visibility:hidden; margin-bottom:-125px;" scrolling="no" onload="this.style.visibility='visible';"></iframe>
+  
+  <div style="width:100%; height:80%; position:absolute; top:20%"></div>
+  
+  <img id="menu" src="imagenes/menu.png" style="position:absolute; top:5%; left:5%; height:3%; cursor:pointer; visibility:hidden"/>
+  <img id="mundo" src="imagenes/mundo.svg" style="position:absolute; top:4.5%; right:5%; height:4%; cursor:pointer; visibility:hidden"/>
+  
+  <div id="menu1" style="position:absolute; left:0%; top:1%; height:11%; width:70px; cursor:pointer"></div>
+  <div id="mundo1" style="position:absolute; right:0%; top:1%; height:11%; width:70px; cursor:pointer"></div>
+  
+  
+  <div id="grados" class="texto4" style="top:25%; left:15%; color:#ffffcc"></div>
+  <img id="icono" height="18%" width="auto" style="position:absolute; right:15%; top:25%;"/>
+  		
+  <div style="position:absolute; width:100%; height:10%; top:90%; background-color:rgba(0,0,0,0.2); border-top: 1px solid #FFFFFF;">
+  	<div class="dias" style="font-size:10px;">
+    	<span id="dia1" style="position:absolute; width:100%; left:0px; font-size:10px"></span>
+    	<img id="ic1" height="65%" style="position:absolute; top:30%; left:50%; margin-left:-13px;"/>
+    </div>
+    <div class="dias" style="font-size:11px;">
+    	<span id="dia2" style="position:absolute; width:100%; left:0px; font-size:10px"></span>
+    	<img id="ic2" height="65%" style="position:absolute; top:30%; left:50%; margin-left:-13px;"/>
+    </div>
+    <div class="dias" style="font-size:11px;">
+    	<span id="dia3" style="position:absolute; width:100%; left:0px; font-size:10px"></span>
+    	<img id="ic3" height="65%" style="position:absolute; top:30%; left:50%; margin-left:-13px;"/>
+    </div>
+    <div class="dias" style="font-size:11px;">
+    	<span id="dia4" style="position:absolute; width:100%; left:0px; font-size:10px"></span>
+    	<img id="ic4" height="65%" style="position:absolute; top:30%; left:50%; margin-left:-13px;"/>
+    </div>
+    <div class="dias" style="font-size:9px;">
+    	<span id="dia5" style="position:absolute; width:100%; left:0px; font-size:10px;"></span>
+    	<img id="ic5" height="65%" style="position:absolute; top:30%; left:50%; margin-left:-13px;"/>
+    </div>
+  
+  </div>
+
+</div>
+
+
+
+ 
+<script type="text/javascript" src="cordova.js"></script> 
+<script src="lib/lock-6.js"></script> 
+<script type="text/javascript" src="js/auth0-variables.js"></script> 
+<script type="text/javascript" src="js/app.js"></script> 
+<script type="text/javascript" src="js/index.js"></script> 
+<script type="text/javascript">
+
+			var lugar=1
+			$('#menu, #menu1').click(function(){
+				if(lugar==1){
+				$('#clima').animate({left:'90%'}, 800);
+				$('#menu').animate({left:'2%'}, 800);
+				$('#opciones').css('visibility', 'visible')
+				lugar=2
+				}else{
+				$('#clima').animate({left:'0%'}, 800);
+				$('#menu').animate({left:'5%'}, 800);
+				setTimeout("$('#opciones').css('visibility', 'hidden')", 800);
+				lugar=1
+				}
+			})
+			$('#mundo, #mundo1').click(function(){
+				if(lugar==1){
+				
+				
+				$('.globito1, .globito2, .globito3, .globito4, .globito5').animate({marginTop:'-50%'}, 0);
+				$('.globito1').delay(800).animate({marginTop:'0%'}, 1500, 'easeOutBounce');
+				$('.globito2').delay(1100).animate({marginTop:'0%'}, 1500, 'easeOutBounce');
+				$('.globito3').delay(1400).animate({marginTop:'0%'}, 1500, 'easeOutBounce');
+				$('.globito4').delay(1700).animate({marginTop:'0%'}, 1500, 'easeOutBounce');
+				$('.globito5').delay(2000).animate({marginTop:'0%'}, 1500, 'easeOutBounce');
+				
+				$('#clima').animate({left:'-90%'}, 800);
+				$('#mundo').animate({right:'2%'}, 800);
+				$('#mapa').css('visibility', 'visible')
+				lugar=3
+				}else{
+				$('#clima').animate({left:'0%'}, 800);
+				$('#mundo').animate({right:'5%'}, 800);
+				setTimeout("$('#mapa').css('visibility', 'hidden')", 800);
+				lugar=1
+				}
+			})
+			
+            
+
+			function inicio(){
+			$('#pollo').transit({scale: '.55'}, 0);
+			$('#pollo').css('opacity','0.0')
+			$('#pollo').animate({opacity:'1'}, 800);
+			
+			setTimeout("$('#tt1').css('visibility', 'visible')", 800)
+			setTimeout("$('#ubi').css('visibility', 'visible')", 800)
+			setTimeout("$('#tt2').css('visibility', 'visible')", 800)
+			setTimeout("$('#menu').css('visibility', 'visible')", 800)
+			setTimeout("$('#mundo').css('visibility', 'visible')", 800)
+			
+
+			
+			
+			$(function() {
+				var $window = $(window);
+				var width = $window.width();
+				var height = $window.height();
+				$('#tt0').css('font-size', height/33+'px')
+				$('#tt1').css('font-size', height/33+'px')
+				$('#ubi').css('font-size', height/62+'px')
+				$('#tt2').css('font-size', height/62+'px')
+				$('#grados').css('font-size', height/5+'px')
+				$('.dias').css('font-size', height/55+'px')
+				setInterval(function () {
+					if ((width != $window.width()) || (height != $window.height())) {
+						ancho = $("#mapa1").width()
+						$('#tt0').css('font-size', height/33+'px')
+						$('#tt1').css('font-size', height/33+'px')
+						$('#ubi').css('font-size', height/62+'px')
+						$('#tt2').css('font-size', height/62+'px')
+						$('#grados').css('font-size', height/5+'px')
+						$('.dias').css('font-size', height/55+'px')
+						
+						$(".mapas").css('width', ($("#mapa1").width())+'px')
+						$(".mapas").css('height', ($("#mapa1").height())+'px')
+			
+						width = $window.width();
+						height = $window.height();
+					}
+				}, 10);
+			});
+			}
+
+//
+
+			app.initialize();
+
+        </script>
+           
+</div>
+</div>
+</div>
+
+
+
+<script>
+$(function() {
+           $( "#todo").draggable({ containment: '#fondo', revert: "valid",
+		  	start: function() {
+				//$('#puntos1, #puntos2').css('visibility','visible')
+          	},stop: function() {
+				 una=0
+        	}
+		  });
+		      
+		   $( "#fondo" ).droppable({tolerance: "touch",drop: function( event, ui ) {}});
+        });
+		
+		
+		saber2()
+		var arriba
+		var una = 0
+		function saber2(){
+			setTimeout('saber2()', 500)
+			arriba = document.getElementById("todo").offsetTop
+			if(arriba>=20 && una == 0){
+				una=1
+				
+				
+				
+				var Result = $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (data)
+    {
+		grados = data.main.temp
+		
+		if(gg==1){
+		 	grados = (grados -32)/1.8
+		 }
+		
+		$('#tt1').html(data.name)
+		$('#tt2').html(fecha+", "+data.weather[0].description)
+		$('#grados').html(Math.round(grados)+'°')	
+		
+		sunset = formatTime(data.sys.sunset);
+		sunset = sunset.split(':')
+		
+		sunrise = formatTime(data.sys.sunrise);
+		sunrise = sunrise.split(':')
+		
+		horasM= (parseInt(sunrise[0])*60) + parseInt(sunrise[1]) 
+		horasT= (parseInt(sunset[0])*60) + parseInt(sunset[1]) 
+		horasA= (parseInt(hora)*60) + parseInt(minuto) 
+
+ico = data.weather[0].id
+cadena = data.weather[0].icon
+
+if(horasA >= horasM && hora <= horasT){
+	ico2 = ico+'d'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo6').fadeIn()
+	$('#clima').css('background-color','#3f5b76')
+}else{
+	ico2 = ico+'n'
+	$('#fondo1, #fondo2, #fondo3, #fondo4, #fondo5, #fondo6').fadeOut()
+	$('#fondo5').fadeIn()
+	$('#clima').css('background-color','#022f4b')
+}
+
+
+		 $('#icono').attr('src', 'iconos/'+ico2+'.svg');
+		 $('#pollo').css('opacity','0.0')
+		 $('#pollo').delay(1000).animate({opacity:'1'}, 800);
+		 
+		 if(ico==3 || ico==27 || ico==29 || ico==31 || ico==33 || ico==38 || ico==39){
+		 	$('#pollo').attr('src', 'animaciones/an'+data.query.results.channel.item.condition.code+'/an1.html');
+		 }else{
+		 	$('#pollo').attr('src', 'animaciones/an1/an1.html');
+		 }
+		
+    });
+	
+	
+	
+	
+	
+	var ResultHora = $.getJSON("http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827", "",
+    function (dataHora)
+    {
+		var hor1 = formatTime(dataHora.list[0].dt);
+		$('#hora1').html(hor1)
+		grados1 = dataHora.list[0].main.temp
+		if(gg==1){
+		 	grados1 = (grados1 -32)/1.8
+		 }
+		$('#gra1').html(Math.round(grados1)+'°')
+		hor1 = hor1.split(':')
+		var ho1= (parseInt(hor1[0])*60) + parseInt(hor1[1]) 
+		var icon1=dataHora.list[0].weather[0].id
+		if(ho1 >= horasM && ho1 <= horasT){
+			icon1 = icon1+'d'
+		}else{
+			icon1 = icon1+'n'
+		}
+		$('#ico1').attr('src', 'iconos/'+icon1+'.svg');
+		
+		
+		
+		
+		var hor2 = formatTime(dataHora.list[1].dt);
+		$('#hora2').html(hor2)
+		grados2 = dataHora.list[1].main.temp
+		if(gg==1){
+		 	grados2 = (grados2 -32)/1.8
+		 }
+		$('#gra2').html(Math.round(grados2)+'°')
+		hor2 = hor2.split(':')
+		var ho2= (parseInt(hor2[0])*60) + parseInt(hor2[1]) 
+		var icon2=dataHora.list[1].weather[0].id
+		if(ho2 >= horasM && ho2 <= horasT){
+			icon2 = icon2+'d'
+		}else{
+			icon2 = icon2+'n'
+		}
+		$('#ico2').attr('src', 'iconos/'+icon2+'.svg');
+		
+		
+		
+		var hor3 = formatTime(dataHora.list[2].dt);
+		$('#hora3').html(hor3)
+		grados3 = dataHora.list[2].main.temp
+		if(gg==1){
+		 	grados3 = (grados3 -32)/1.8
+		 }
+		$('#gra3').html(Math.round(grados3)+'°')
+		hor3 = hor3.split(':')
+		var ho3= (parseInt(hor3[0])*60) + parseInt(hor3[1]) 
+		var icon3=dataHora.list[2].weather[0].id
+		if(ho3 >= horasM && ho3 <= horasT){
+			icon3 = icon3+'d'
+		}else{
+			icon3 = icon3+'n'
+		}
+		$('#ico3').attr('src', 'iconos/'+icon3+'.svg');
+		
+		
+		
+		var hor4 = formatTime(dataHora.list[3].dt);
+		$('#hora4').html(hor4)
+		grados4 = dataHora.list[3].main.temp
+		if(gg==1){
+		 	grados4 = (grados4 -32)/1.8
+		 }
+		$('#gra4').html(Math.round(grados4)+'°')
+		hor4 = hor4.split(':')
+		var ho4= (parseInt(hor4[0])*60) + parseInt(hor4[1]) 
+		var icon4=dataHora.list[3].weather[0].id
+		if(ho4 >= horasM && ho4 <= horasT){
+			icon4 = icon4+'d'
+		}else{
+			icon4 = icon4+'n'
+		}
+		$('#ico4').attr('src', 'iconos/'+icon4+'.svg');
+		
+		
+		
+		
+		
+		var hor5 = formatTime(dataHora.list[4].dt);
+		$('#hora5').html(hor5)
+		grados5 = dataHora.list[4].main.temp
+		if(gg==1){
+		 	grados5 = (grados5 -32)/1.8
+		 }
+		$('#gra5').html(Math.round(grados5)+'°')
+		hor5 = hor5.split(':')
+		var ho5= (parseInt(hor5[0])*60) + parseInt(hor5[1]) 
+		var icon5=dataHora.list[4].weather[0].id
+		if(ho5 >= horasM && ho5 <= horasT){
+			icon5 = icon5+'d'
+		}else{
+			icon5 = icon5+'n'
+		}
+		$('#ico5').attr('src', 'iconos/'+icon5+'.svg');
+		
+		
+		
+		
+		var hor6 = formatTime(dataHora.list[5].dt);
+		$('#hora6').html(hor6)
+		grados6 = dataHora.list[5].main.temp
+		if(gg==1){
+		 	grados6 = (grados6 -32)/1.8
+		 }
+		$('#gra6').html(Math.round(grados6)+'°')
+		hor6 = hor6.split(':')
+		var ho6= (parseInt(hor6[0])*60) + parseInt(hor6[1]) 
+		var icon6=dataHora.list[5].weather[0].id
+		if(ho6 >= horasM && ho6 <= horasT){
+			icon6 = icon6+'d'
+		}else{
+			icon6 = icon6+'n'
+		}
+		$('#ico6').attr('src', 'iconos/'+icon6+'.svg');
+		
+    });
+	
+	
+	
+	
+	var ResultDia = $.getJSON("http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lon+"&units=imperial&APPID=6a6a4073a3225ae9aafe7b996562e827&cnt=5", "",
+    function (dataDia)
+    {
+		
+	
+var weekday = new Array(7);
+weekday[0]=  "SUN";
+weekday[1] = "MON";
+weekday[2] = "TUE";
+weekday[3] = "WED";
+weekday[4] = "THU";
+weekday[5] = "FRI";
+weekday[6] = "SAT";
+		
+		var milliseconds1 = dataDia.list[0].dt * 1000;
+        var date1 = new Date(milliseconds1);
+		var n1 = weekday[date1.getDay()];
+		$('#dia1').html(n1)
+		$('#ic1').attr('src', 'iconos/'+dataDia.list[0].weather[0].id+'d.svg');
+		
+		var milliseconds2 = dataDia.list[1].dt * 1000;
+        var date2 = new Date(milliseconds2);
+		var n2 = weekday[date2.getDay()];
+		$('#dia2').html(n2)
+		$('#ic2').attr('src', 'iconos/'+dataDia.list[1].weather[0].id+'d.svg');
+		
+		var milliseconds3 = dataDia.list[2].dt * 1000;
+        var date3 = new Date(milliseconds3);
+		var n3 = weekday[date3.getDay()];
+		$('#dia3').html(n3)
+		$('#ic3').attr('src', 'iconos/'+dataDia.list[2].weather[0].id+'d.svg');
+		
+		var milliseconds4 = dataDia.list[3].dt * 1000;
+        var date4 = new Date(milliseconds4);
+		var n4 = weekday[date4.getDay()];
+		$('#dia4').html(n4)
+		$('#ic4').attr('src', 'iconos/'+dataDia.list[3].weather[0].id+'d.svg');
+		
+		var milliseconds5 = dataDia.list[4].dt * 1000;
+        var date5 = new Date(milliseconds5);
+		var n5 = weekday[date5.getDay()];
+		$('#dia5').html(n5)
+		$('#ic5').attr('src', 'iconos/'+dataDia.list[4].weather[0].id+'d.svg');
+    });
+				
+				
+				
+				
+			}
+		}
+		
+</script>
+        
+</body>
+</html>
